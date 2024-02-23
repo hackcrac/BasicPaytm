@@ -12,6 +12,7 @@ const authMiddleware = (req, res, next)=>{
     try{
         const user = jwtToken.verify(token, JWT_SECRET);
         req.userId = user.userId;
+        req.firstName = user.firstName;
         next();
     }
     catch(err){

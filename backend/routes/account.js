@@ -7,7 +7,8 @@ const accountRouter = express.Router();
 accountRouter.get('/balance', authMiddleware , async (req, res)=>{
     const account = await Account.findOne({userId: req.userId});
     res.json({
-        balance: account.balance
+        balance: account.balance,
+        firstName: req.firstName
     });
 })
 
@@ -35,6 +36,7 @@ accountRouter.post('/transfer', authMiddleware, async(req, res)=>{
     try{
         await Account.updateOne({userId: senderId}, {$inc: {balance: -amountToTransfer}}).session(session);
         await Account.updateOne({userId: receiverId}, {$inc: {balance: amountToTransfer}}).session(session);
+
         await session.commitTransaction();
         res.json({
             message: "Transfer successful"
@@ -43,7 +45,7 @@ accountRouter.post('/transfer', authMiddleware, async(req, res)=>{
     catch(err){
         await session.abortTransaction();
         res.status(500).json({
-            message: "Internal server error"
+            message: `Internal server error ${err}`
         })
     }
 

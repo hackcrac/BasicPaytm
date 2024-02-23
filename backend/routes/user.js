@@ -38,7 +38,7 @@ userRouter.post('/signup', async (req, res) => {
             balance: Math.floor(Math.random()*10000) + 1
         })
 
-        const token = jwtToken.sign({userId}, JWT_SECRET);
+        const token = jwtToken.sign({userId, firstName: req.body.firstName}, JWT_SECRET);
 
         res.json({
             message: "User created successfully",
@@ -72,7 +72,7 @@ userRouter.post("/signin", async (req, res) => {
         return;
     }
     const userId = user._id;
-    const token = jwtToken.sign({userId}, JWT_SECRET);
+    const token = jwtToken.sign({userId, firstName: user.firstName}, JWT_SECRET);
     res.json({
         token
     });
@@ -105,7 +105,7 @@ userRouter.put('/', authMiddleware, async (req, res) => {
     }
 })
 
-userRouter.get("/bulk", async (req, res) => {
+userRouter.get("/bulk",async (req, res) => {
     const filter = req.query.filter;
     const users = await User.find({
         $or: [{

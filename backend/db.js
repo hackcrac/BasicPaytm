@@ -3,6 +3,7 @@ const {DATABASE_URL} = require("./config");
 
 async function main(){
     await mongoose.connect(DATABASE_URL);
+    // await mongoose.connect("mongodb://localhost:27017");
 }
 
 main().catch(err => console.log(err));
